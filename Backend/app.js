@@ -5,9 +5,10 @@ const http = require("http")
 const server = http.createServer(app)
 const PORT = process.env.PORT
 const RTCcontroller = require("./Controller/WebRTCBackend")
-
+const cors =  require("cors")
 
 app.use(express.json())
+app.use(cors())
 
 
 app.get("/" , (req,res)=>{
