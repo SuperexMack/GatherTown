@@ -1,11 +1,13 @@
 "use client";
 
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import building from "../images/jpaa.png"
 
 export default function Game() {
   const gameRef = useRef(null);
+  const [touched,setTouched] = useState(false)
+  const [evenOdd , setEvenodd] = useState(2)
 
   useEffect(() => {
     if (!gameRef.current) {
@@ -130,10 +132,38 @@ export default function Game() {
     }
   }
 
+  const caller = ()=>{
+    setEvenodd((prev)=>prev+1)
+    if(evenOdd%2==0) setTouched(false)
+    else setTouched(true)
+  }
+
   return(
   <>
-  <div id="game-container" className="flex justify-center items-center" style={{ width: "100%", height: "100%" }} >
- 
+  <div id="game-container" className="flex flex-col justify-center items-center" style={{ width: "100%", height: "100%" }} >
+  <div onClick={caller} className={`bg-slate-200 hover:cursor-pointer w-[300px] ${touched ? "h-[300px] transition-all duration-500 ease-in-out" : "h-[30px] flex justify-center items-center transition-all duration-500 ease-in-out"} rounded-lg fixed left-[5%] mt-[600px] flex flex-col items-center`}>
+      
+      {touched ? (
+        <>
+       
+      <h1 className="font-bold text-red-600 mt-2">Chat Box!!</h1>
+      <div className="w-full h-[70%] overflow-y-scroll flex flex-col p-4">
+      <h1>Mack - How are u ? </h1>
+      <h1>Rahul - I am to fine </h1>
+      </div>
+      <div className="w-[80%]">
+      <input className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
+     </div>
+     </>
+
+      ) : (
+        <>
+        <h1 className="font-bold text-violet-700">Click here for live chat</h1>
+        </>
+      )}
+     
+
+  </div>
   </div>
   </>
   )
