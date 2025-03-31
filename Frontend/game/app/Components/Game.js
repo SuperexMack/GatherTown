@@ -2,7 +2,8 @@
 
 import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
-import building from "../images/jpaa.png"
+import { ChevronUp,ChevronDown} from 'lucide-react';
+
 
 export default function Game() {
   const gameRef = useRef(null);
@@ -132,33 +133,50 @@ export default function Game() {
     }
   }
 
+
   const caller = ()=>{
     setEvenodd((prev)=>prev+1)
-    if(evenOdd%2==0) setTouched(false)
-    else setTouched(true)
+    if(evenOdd%2!=0){
+      console.log("other " + evenOdd)
+      return setTouched(false)
+    }
+    else{
+      console.log("other " + evenOdd)
+      return setTouched(true)
+    }
+    
   }
+
+  
 
   return(
   <>
   <div id="game-container" className="flex flex-col justify-center items-center" style={{ width: "100%", height: "100%" }} >
-  <div onClick={caller} className={`bg-slate-200 hover:cursor-pointer w-[300px] ${touched ? "h-[300px] transition-all duration-500 ease-in-out" : "h-[30px] flex justify-center items-center transition-all duration-500 ease-in-out"} rounded-lg fixed left-[5%] mt-[600px] flex flex-col items-center`}>
+  <div className={`bg-slate-200 hover:cursor-pointer w-[300px] ${touched ? "h-[300px] transition-all duration-500 ease-in-out" : "h-[30px] flex justify-center items-center transition-all duration-500 ease-in-out"} rounded-lg fixed left-[5%] mt-[600px] flex flex-col items-center`}>
       
       {touched ? (
         <>
-       
-      <h1 className="font-bold text-red-600 mt-2">Chat Box!!</h1>
+      
+      <div className="flex space-x-4 justify-center items-center">
+      <h1 className="font-bold text-violet-600 mt-2">Chat Box!!</h1>
+      <ChevronDown className="mt-2" onClick={caller}></ChevronDown>
+      </div>
+
       <div className="w-full h-[70%] overflow-y-scroll flex flex-col p-4">
       <h1>Mack - How are u ? </h1>
       <h1>Rahul - I am to fine </h1>
       </div>
-      <div className="w-[80%]">
+      <div className="w-[80%] z-30">
       <input className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
      </div>
      </>
 
       ) : (
         <>
+        <div className="flex space-x-3 items-center">
         <h1 className="font-bold text-violet-700">Click here for live chat</h1>
+        <ChevronUp onClick={caller}></ChevronUp>
+        </div>
         </>
       )}
      
