@@ -3,12 +3,46 @@
 import React, { useEffect, useRef, useState } from "react";
 import Phaser from "phaser";
 import { ChevronUp,ChevronDown} from 'lucide-react';
+import { useParams } from "next/navigation";
 
 
 export default function Game() {
   const gameRef = useRef(null);
   const [touched,setTouched] = useState(false)
   const [evenOdd , setEvenodd] = useState(2)
+  const [mymessage , setMymessage] = useState("")
+  const [allmessages , setAllmessages] = useState([])
+
+  const socket = useRef(null)
+  let params = useParams()
+  let roomname = params
+
+ useEffect(()=>{
+    socket.current = new WebSocket("ws://localhost:9000")
+
+    socket.current.onopen = ()=>{
+      console.log("Socket has been connected")
+    }
+
+    socket.current.onmessage = ((incomingdata)=>{
+      try{
+        let value = JSON.parse(incomingdata.data)
+        if(value.type === "Chat"){
+          setAllmessages(prev , ()=>[
+            ...prev,
+            value.newMsg
+          ])
+        }
+      }
+
+
+      catch(error){
+        console.log("Something went wrong while getting the data")
+      }
+      
+    })
+
+ },[])
 
   useEffect(() => {
     if (!gameRef.current) {
@@ -147,6 +181,18 @@ export default function Game() {
     
   }
 
+
+  // Message Logic 
+
+  const messageLogicBody = ()=>{
+    socket.current.send(JSON.parse({type:"Chat" , newMsg:mymessage , toRoom:roomname}))
+  }
+
+  const sendMessage = (e)=>{
+    if(e.key === "Enter"){
+      messageLogicBody()
+    }
+  }
   
 
   return(
@@ -167,7 +213,7 @@ export default function Game() {
       <h1>Rahul - I am to fine </h1>
       </div>
       <div className="w-[80%] z-30">
-      <input className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
+      <input onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
      </div>
      </>
 
