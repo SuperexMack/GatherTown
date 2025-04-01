@@ -16,6 +16,9 @@ export default function Game() {
 
   const socket = useRef(null)
   
+
+  
+
   let {id} = useParams()
   
   console.log("id is :" + id)
@@ -26,11 +29,17 @@ export default function Game() {
 
     socket.current.onopen = ()=>{
       console.log("Socket has been connected")
+      if(id){
+        socket.current.send(JSON.stringify({type:"Join" , room : id}))
+      }
     }
 
     socket.current.onmessage = ((incomingdata)=>{
+      console.log("Try se bahar")
       try{
         let value = JSON.parse(incomingdata.data)
+        console.log("message aa gya")
+        console.log("Received data on frontend:", value)
         if(value.type === "Chat"){
           setAllmessages(prev =>[
             ...prev,
@@ -45,6 +54,11 @@ export default function Game() {
       }
       
     })
+
+    return () => {
+      console.log("Closing WebSocket connection...");
+      socket.current.close();
+    };
 
  },[])
 
@@ -224,7 +238,7 @@ export default function Game() {
       {allmessages.length>0?(
       
        (allmessages.map((value,index)=>(
-        <div key={index} className="w-full h-[70%] overflow-auto flex flex-col p-4">
+        <div key={index} className="w-full h-[70%] overflow-y-scroll flex flex-col p-4">
           <h1>{value}</h1>
         </div>
        )))
