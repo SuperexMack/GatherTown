@@ -107,6 +107,14 @@ export default function Game() {
     this.load.image("newHouse" , "/images/houseTwo.png")
     this.load.image("firstTable" , "/images/firstTable.png")
     this.load.image("sofa" , "/images/sofa.png")
+    this.load.image("bed" , "/images/bed.png")
+    this.load.image("plant" , "/images/plant.png")
+    this.load.image("stool" , "/images/stool.png")
+    this.load.image("set" , "/images/set.png")
+    this.load.image("sofat" , "/images/bluesofa.png")
+    this.load.image("laptop" , "/images/laptop.png")
+    this.load.image("tabletwo" , "/images/table.png")
+    this.load.image("lamp" , "/images/lamp.png")
 
   }
 
@@ -126,6 +134,59 @@ export default function Game() {
       {x:80,y:250}
     ]
 
+    const bed = [
+      {x:800 , y:-10},
+      {x:1000 , y:-10},
+      {x:1200 , y:-10},
+      {x:1400 , y:-10}
+    ]
+
+    const plant = [
+      {x:1200,y:800},
+      {x:1280,y:800},
+      {x:1360,y:800},
+      {x:1420,y:800}
+    ]
+
+    const stool = [
+      {x:1200,y:400}, // don't touch
+      {x:1270,y:450},
+      {x:1250,y:350}, // don't touch
+      {x:1320,y:390}
+    ]
+
+    const wall = [
+      {x:600,y:-20},      
+    ]
+
+    const sofaTwo = [
+      {x:900 , y:700}
+    ]
+
+    const laptop = [
+      {x:800 , y:730}
+    ]
+
+    const tabletwo = [
+      {x:700,y:300}
+    ]
+
+
+    const lamp = [
+      {x:200,y:800},
+      {x:280 ,y:800},
+      {x:400 ,y:800},
+      {x:480 ,y:800},
+      {x:560 ,y:800}
+    ]
+
+    const lappoSecond = [
+      {x:250 , y:800},
+      {x:340 ,y:800},
+      {x:440 ,y:800},
+      {x:520 ,y:800}
+    ]
+
     table.forEach((value)=>{
       let table = this.buildings.create(value.x , value.y , "firstTable").setScale(1.3)
       table.refreshBody()
@@ -135,6 +196,56 @@ export default function Game() {
       let sofa = this.buildings.create(pos.x , pos.y , "sofa").setScale(0.8)
       sofa.refreshBody()
     })
+
+    bed.forEach((value)=>{
+      let bed = this.buildings.create(value.x,value.y,"bed").setScale(0.8)
+      bed.refreshBody()
+    })
+
+    plant.forEach((value)=>{
+      let plant = this.buildings.create(value.x,value.y,"plant").setScale(2)
+      plant.refreshBody()
+    })
+
+
+    stool.forEach((value)=>{
+      let stool = this.buildings.create(value.x,value.y,"stool").setScale(1)
+      stool.refreshBody()
+    })
+
+    wall.forEach((value)=>{
+      let walll = this.buildings.create(value.x,value.y,"set").setScale(1.3)
+      // walll.setAngle(-800);
+      walll.refreshBody()
+    })
+
+    sofaTwo.forEach((value)=>{
+      let wal = this.buildings.create(value.x,value.y,"sofat").setScale(1.1)
+      // walll.setAngle(-800);
+      wal.refreshBody()
+    })
+
+    laptop.forEach((value)=>{
+      let laptop = this.buildings.create(value.x,value.y,"laptop").setScale(1.1)
+      // walll.setAngle(-800);
+      laptop.refreshBody()
+    })
+
+    tabletwo.forEach((value)=>{
+      let findTable = this.buildings.create(value.x,value.y,"tabletwo").setScale(0.25)
+      findTable.refreshBody()
+    })
+
+    lamp.forEach((value)=>{
+      let lamp = this.buildings.create(value.x,value.y,"lamp").setScale(0.5)
+      lamp.refreshBody()
+    })
+
+    lappoSecond.forEach((value)=>{
+      let lamppo = this.buildings.create(value.x,value.y,"laptop").setScale(0.9)
+      lamppo.refreshBody()
+    })
+    
 
     // const buildingPositionSecondType = [
     //   { x: 20, y: 200 },
@@ -182,13 +293,15 @@ export default function Game() {
 
     if (this.cursors.left.isDown) {
       this.player.setVelocityX(-speed);
-    } else if (this.cursors.right.isDown) {
+    } 
+    else if (this.cursors.right.isDown) {
       this.player.setVelocityX(speed);
     }
 
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(-speed);
-    } else if (this.cursors.down.isDown) {
+    } 
+    else if (this.cursors.down.isDown) {
       this.player.setVelocityY(speed);
     }
   }
