@@ -12,10 +12,14 @@ export default function Game() {
   const [evenOdd , setEvenodd] = useState(2)
   const [mymessage , setMymessage] = useState("")
   const [allmessages , setAllmessages] = useState([])
+  
 
   const socket = useRef(null)
-  let params = useParams()
-  let roomname = params
+  
+  let {id} = useParams()
+  
+  console.log("id is :" + id)
+  
 
  useEffect(()=>{
     socket.current = new WebSocket("ws://localhost:9000")
@@ -28,7 +32,7 @@ export default function Game() {
       try{
         let value = JSON.parse(incomingdata.data)
         if(value.type === "Chat"){
-          setAllmessages(prev , ()=>[
+          setAllmessages(prev =>[
             ...prev,
             value.newMsg
           ])
@@ -43,6 +47,14 @@ export default function Game() {
     })
 
  },[])
+
+
+
+ if(allmessages.length>0){
+  allmessages.map((value)=>{
+    console.log(value)
+  })
+ }
 
   useEffect(() => {
     if (!gameRef.current) {
@@ -185,7 +197,8 @@ export default function Game() {
   // Message Logic 
 
   const messageLogicBody = ()=>{
-    socket.current.send(JSON.parse({type:"Chat" , newMsg:mymessage , toRoom:roomname}))
+    socket.current.send(JSON.stringify({type:"Chat" , newMsg:mymessage , room:id}))
+    setMymessage("")
   }
 
   const sendMessage = (e)=>{
@@ -208,12 +221,21 @@ export default function Game() {
       <ChevronDown className="mt-2" onClick={caller}></ChevronDown>
       </div>
 
-      <div className="w-full h-[70%] overflow-y-scroll flex flex-col p-4">
-      <h1>Mack - How are u ? </h1>
-      <h1>Rahul - I am to fine </h1>
-      </div>
+      {allmessages.length>0?(
+      
+       (allmessages.map((value,index)=>(
+        <div key={index} className="w-full h-[70%] overflow-auto flex flex-col p-4">
+          <h1>{value}</h1>
+        </div>
+       )))
+      ):(
+        <>
+        <h1 className="font-bold text-[20px]">No chat found........</h1>
+        </>
+      )}
+      
       <div className="w-[80%] z-30">
-      <input onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
+      <input value={mymessage} onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
      </div>
      </>
 

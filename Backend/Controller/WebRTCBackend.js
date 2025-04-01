@@ -12,6 +12,7 @@ let rooms = {};
                 console.log("Room key is " + alldata.room)
                 console.log("Room Name is " + alldata.RoomName)
                 console.log("Type of service is " + alldata.type)
+                console.log("The chat name is : " + alldata.newMsg)
                 
                 if(alldata.type === "Create"){
                    rooms[alldata.room] = []
@@ -27,8 +28,9 @@ let rooms = {};
                 }
                 else if(alldata.type === "Chat"){
                     if(rooms[alldata.room]){
+                        console.log("aa gya call")
                         rooms[alldata.room].forEach((msg)=>{
-                            msg.send(JSON.stringify({type : "Chat" , newMsg : alldata.mymsg , toRoom : alldata.room}))
+                            msg.send(JSON.stringify({type : "Chat" , newMsg : alldata.newMsg , room : alldata.room}))
                         })
                     }
                 }
