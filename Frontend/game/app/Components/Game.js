@@ -12,6 +12,8 @@ export default function Game() {
   const [evenOdd , setEvenodd] = useState(2)
   const [mymessage , setMymessage] = useState("")
   const [allmessages , setAllmessages] = useState([])
+  const [xposition , setXposition] = useState(512)
+  const [yposition , setYposition] = useState(384)
   
 
   const socket = useRef(null)
@@ -115,6 +117,8 @@ export default function Game() {
     this.load.image("laptop" , "/images/laptop.png")
     this.load.image("tabletwo" , "/images/table.png")
     this.load.image("lamp" , "/images/lamp.png")
+    this.load.image("kushon" , "/images/kushon.png")
+    this.load.image("centerDesk" , "/images/centerdesk.png")
 
   }
 
@@ -186,6 +190,17 @@ export default function Game() {
       {x:440 ,y:800},
       {x:520 ,y:800}
     ]
+    
+    const centerDesk = [
+      {x:400,y:500}
+    ]
+
+    const kushon = [
+      {x:400,y:420},
+      {x:300,y:500},
+      {x:400,y:580},
+      {x:500,y:500},
+    ]
 
     table.forEach((value)=>{
       let table = this.buildings.create(value.x , value.y , "firstTable").setScale(1.3)
@@ -245,6 +260,16 @@ export default function Game() {
       let lamppo = this.buildings.create(value.x,value.y,"laptop").setScale(0.9)
       lamppo.refreshBody()
     })
+
+    centerDesk.forEach((value)=>{
+      let centerDesk = this.buildings.create(value.x,value.y,"centerDesk").setScale(0.9)
+      centerDesk.refreshBody()
+    })
+
+    kushon.forEach((value)=>{
+      let kushon = this.buildings.create(value.x,value.y,"kushon").setScale(0.6)
+      kushon.refreshBody()
+    })
     
 
     // const buildingPositionSecondType = [
@@ -272,7 +297,7 @@ export default function Game() {
 
     // Player
     this.player = this.physics.add
-      .sprite(512, 384, "player")
+      .sprite(xposition, yposition, "player")
       .setScale(0.2)
       .setCollideWorldBounds(true);
 
