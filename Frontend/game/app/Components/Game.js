@@ -48,6 +48,12 @@ export default function Game() {
             value.newMsg
           ])
         }
+        if(value.type === "Move"){
+          console.log("New Value :" + value.positionChangeX)
+          console.log("New Value :" + value.positionChangeY)
+          setXposition(value.positionChangeX)
+          setYposition(value.positionChangeY)
+        }
       }
 
 
@@ -101,6 +107,28 @@ export default function Game() {
       }
     };
   }, []);
+
+
+  // Movement code 
+ 
+
+  const changePosition = (posValueX, posValueY) => {
+    if (socket.current) {
+      console.log("Sending position:", posValueX, posValueY);
+      socket.current.send(JSON.stringify({
+        type: "Move",
+        room: id,
+        positionChangeX: posValueX, 
+        positionChangeY: posValueY
+      }));
+    }
+  };
+  
+  // Expose changePosition to the Phaser game
+  useEffect(() => {
+    window.changePosition = changePosition;
+  }, []);
+  
 
   function preload() {
     this.load.image("road", "/images/wooden.jpg");
@@ -312,7 +340,13 @@ export default function Game() {
   }
 
   function update() {
+  
     const speed = 500;
+
+    let xpos = this.player.x
+    let ypos = this.player.y
+
+    
 
     this.player.setVelocity(0);
 
@@ -323,12 +357,21 @@ export default function Game() {
       this.player.setVelocityX(speed);
     }
 
+
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(-speed);
     } 
     else if (this.cursors.down.isDown) {
       this.player.setVelocityY(speed);
     }
+
+    this.time.delayedCall(10, () => {
+      if (xpos !== this.player.x || ypos !== this.player.y) {
+        console.log("Position changed! X:", this.player.x, "Y:", this.player.y);
+        window.changePosition(this.player.x, this.player.y);
+      }
+    });
+    
   }
 
 

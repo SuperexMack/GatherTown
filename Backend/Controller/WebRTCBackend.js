@@ -13,6 +13,7 @@ let rooms = {};
                 console.log("Room Name is " + alldata.RoomName)
                 console.log("Type of service is " + alldata.type)
                 console.log("The chat name is : " + alldata.newMsg)
+                console.log("Positon x is " + alldata.positionChangeX)
                 
                 if(alldata.type === "Create"){
                    rooms[alldata.room] = []
@@ -34,6 +35,23 @@ let rooms = {};
                         })
                     }
                 }
+
+                else if(alldata.type === "Move") {
+                    if(rooms[alldata.room]) {
+                      console.log("Movement update received:", alldata.positionChangeX, alldata.positionChangeY);
+                      rooms[alldata.room].forEach((client) => {
+                          console.log("Move ka done")
+                          if(client != ws){
+                          client.send(JSON.stringify({
+                            type: "Move", 
+                            room: alldata.room, 
+                            positionChangeX: alldata.positionChangeX, 
+                            positionChangeY: alldata.positionChangeY
+                          }));
+                        }
+                      });
+                    }
+                  }
             })
         })
     }
