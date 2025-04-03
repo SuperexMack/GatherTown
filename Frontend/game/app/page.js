@@ -52,8 +52,7 @@ export default function Home() {
   }
 
   const joinRoom = ()=>{
-    let keyName = generateKey()
-    socket.current.send(JSON.stringify({room:keyName, RoomName : newRoom , type:"Join"}))
+    socket.current.send(JSON.stringify({room:newRoom , type:"Join"}))
     alert("Req sent")
   }
 

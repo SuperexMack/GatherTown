@@ -63,6 +63,8 @@ export default function Game() {
       
     })
 
+    
+
     return () => {
       console.log("Closing WebSocket connection...");
       socket.current.close();
@@ -71,12 +73,9 @@ export default function Game() {
  },[])
 
 
+ 
 
- if(allmessages.length>0){
-  allmessages.map((value)=>{
-    console.log(value)
-  })
- }
+
 
   useEffect(() => {
     if (!gameRef.current) {
@@ -127,7 +126,8 @@ export default function Game() {
   // Expose changePosition to the Phaser game
   useEffect(() => {
     window.changePosition = changePosition;
-  }, []);
+    window.remotePosition = { x: xposition, y: yposition };
+  }, [xposition,yposition]);
   
 
   function preload() {
@@ -147,6 +147,7 @@ export default function Game() {
     this.load.image("lamp" , "/images/lamp.png")
     this.load.image("kushon" , "/images/kushon.png")
     this.load.image("centerDesk" , "/images/centerdesk.png")
+    this.load.image("secondchar" , "/images/secondchar.png")
 
   }
 
@@ -300,37 +301,25 @@ export default function Game() {
     })
     
 
-    // const buildingPositionSecondType = [
-    //   { x: 20, y: 200 },
-    //   { x: 5000, y: 600 },
-    //   { x: 8000, y: 700 },
-    //   { x: 1000, y: 800 },
-    //   { x: 1850, y: 900 },
-    //   { x: 4000, y: 1500 },
-    //   { x: 3300, y: 50 },
-    //   { x: 3600, y: 1400 },
-    //   { x: 3700, y: 3500 },
-    //   { x: 5300, y: 1800 }
-    // ];
-
-    // buildingPositions.forEach((pos) => {
-    //   const building = this.buildings.create(pos.x, pos.y, "building").setScale(0.6);
-    //   building.refreshBody(); // Refresh physics body
-    // });
-
-    // buildingPositionSecondType.forEach((value)=>{
-    //   const building = this.buildings.create(value.x , value.y , "newHouse").setScale(0.6)
-    //   building.refreshBody()
-    // })
+    
 
     // Player
+    console.log("Value of Xpos is : " +  xposition)
+
+
     this.player = this.physics.add
-      .sprite(xposition, yposition, "player")
+      .sprite(512, 384, "player")
       .setScale(0.2)
       .setCollideWorldBounds(true);
 
+    this.secondplayer = this.physics.add
+    .sprite(500,384 , "secondchar")
+    .setScale(0.2)
+    .setCollideWorldBounds(true)
+
     // Add collision between player and buildings
     this.physics.add.collider(this.player, this.buildings);
+    this.physics.add.collider(this.secondplayer , this.buildings)
 
     // Camera follows the player
     this.cameras.main.startFollow(this.player);
@@ -342,11 +331,6 @@ export default function Game() {
   function update() {
   
     const speed = 500;
-
-    let xpos = this.player.x
-    let ypos = this.player.y
-
-    
 
     this.player.setVelocity(0);
 
@@ -361,16 +345,20 @@ export default function Game() {
     if (this.cursors.up.isDown) {
       this.player.setVelocityY(-speed);
     } 
+
+
     else if (this.cursors.down.isDown) {
       this.player.setVelocityY(speed);
     }
 
-    this.time.delayedCall(10, () => {
-      if (xpos !== this.player.x || ypos !== this.player.y) {
-        console.log("Position changed! X:", this.player.x, "Y:", this.player.y);
-        window.changePosition(this.player.x, this.player.y);
-      }
-    });
+    this.secondplayer.setPosition(window.remotePosition.x, window.remotePosition.y);
+    
+   if(this.player.lastX !== this.player.x || this.player.lastY !== this.player.y) {
+      console.log("Position changed! X:", this.player.x, "Y:", this.player.y);
+      window.changePosition(this.player.x, this.player.y);
+      this.player.lastX = this.player.x
+      this.player.lastY = this.player.y
+    }
     
   }
 
@@ -396,11 +384,15 @@ export default function Game() {
     setMymessage("")
   }
 
-  const sendMessage = (e)=>{
-    if(e.key === "Enter"){
-      messageLogicBody()
+  const sendMessage = (e) => {
+    if (e.key === "Enter") {
+      messageLogicBody();
     }
-  }
+    if (e.key === " ") {
+      setMymessage(prev => prev + " ");
+    }
+  };
+  
   
 
   return(
@@ -417,21 +409,28 @@ export default function Game() {
       </div>
 
       {allmessages.length>0?(
-      
-       (allmessages.map((value,index)=>(
-        <div key={index} className="w-full h-[70%] overflow-y-scroll flex flex-col p-4">
-          <h1>{value}</h1>
-        </div>
-       )))
+        <>
+          <div className="w-full h-[70%] overflow-y-auto flex flex-col space-y-2 p-4">
+            {allmessages.map((value,index)=>(
+              <h1 key={index} className="font-bold"><span className="text-red-500">User</span> - {value}</h1>
+            ))}
+          </div>
+        
+        <>
+         <div className="w-[80%]">
+          <input value={mymessage} onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
+          </div>
+        </>
+      </>
       ):(
         <>
         <h1 className="font-bold text-[20px]">No chat found........</h1>
+        <div className="w-[80%]">
+          <input value={mymessage} onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
+          </div>
         </>
       )}
       
-      <div className="w-[80%] z-30">
-      <input value={mymessage} onKeyDown={sendMessage} onChange={(e)=>setMymessage(e.target.value)} className="w-full p-2 border-2 rounded-lg focus:ring-2 focus:ring-violet-600 border-blue-700 " placeholder="Enter Thoughts"></input>
-     </div>
      </>
 
       ) : (

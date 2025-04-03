@@ -25,6 +25,7 @@ let rooms = {};
                 else if(alldata.type === "Join"){
                    rooms[alldata.room] = rooms[alldata.room] || []
                    rooms[alldata.room].push(ws);
+                   ws.send(JSON.stringify({location : alldata.room}))
                    ws.room = alldata.room
                 }
                 else if(alldata.type === "Chat"){
